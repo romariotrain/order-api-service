@@ -52,12 +52,12 @@ func (s OrderStatus) IsValid() bool {
 
 func (o *Order) TransitionTo(next OrderStatus, now time.Time) error {
 
-	if o.Status == next {
-		return nil
-	}
-
 	if o.Status == OrderStatusConfirmed || o.Status == OrderStatusFailed {
 		return ErrTerminalState
+	}
+
+	if o.Status == next {
+		return nil
 	}
 
 	if !next.IsValid() || !o.Status.IsValid() {
