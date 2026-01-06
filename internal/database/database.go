@@ -5,6 +5,7 @@ package database
 // Импортируем необходимые пакеты
 import (
 	"fmt" // Пакет для форматирования строк
+	"time"
 
 	"github.com/jmoiron/sqlx" // Расширение для database/sql с удобными функциями
 	_ "github.com/lib/pq"     // Драйвер PostgreSQL (символ _ означает, что импортируем только для side-effects)
@@ -31,6 +32,7 @@ func Connect(databaseURL string) (*sqlx.DB, error) {
 	// SetMaxOpenConns устанавливает максимальное количество открытых соединений
 	// 25 - хорошее значение по умолчанию для небольших приложений
 	db.SetMaxOpenConns(25)
+	db.SetConnMaxLifetime(time.Hour)
 
 	// SetMaxIdleConns устанавливает максимальное количество простаивающих соединений
 	// Эти соединения остаются открытыми и готовы к переиспользованию

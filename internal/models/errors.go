@@ -7,3 +7,8 @@ var (
 	ErrInvalidTransition = errors.New("invalid order transition")
 	ErrTerminalState     = errors.New("order is in terminal state")
 )
+
+var (
+	ErrNotFound = errors.New("not found")
+	ErrConflict = errors.New("conflict")
+)

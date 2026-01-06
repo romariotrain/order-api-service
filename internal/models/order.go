@@ -25,6 +25,14 @@ type Order struct {
 	UpdatedAt        time.Time   `json:"updated_at" db:"updated_at"`
 }
 
+func NewOrder() Order {
+	return Order{
+		Status:         OrderStatusNew,
+		Version:        1,
+		FailReasonCode: nil,
+	}
+}
+
 func (s OrderStatus) CanTransitionTo(next OrderStatus) bool {
 	switch s {
 	case OrderStatusNew:
@@ -52,16 +60,16 @@ func (s OrderStatus) IsValid() bool {
 
 func (o *Order) TransitionTo(next OrderStatus, now time.Time) error {
 
-	if o.Status == OrderStatusConfirmed || o.Status == OrderStatusFailed {
-		return ErrTerminalState
+	if !next.IsValid() || !o.Status.IsValid() {
+		return ErrInvalidStatus
 	}
 
 	if o.Status == next {
 		return nil
 	}
 
-	if !next.IsValid() || !o.Status.IsValid() {
-		return ErrInvalidStatus
+	if o.Status == OrderStatusConfirmed || o.Status == OrderStatusFailed {
+		return ErrTerminalState
 	}
 
 	if !o.Status.CanTransitionTo(next) {
